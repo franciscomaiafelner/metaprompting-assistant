@@ -1,7 +1,11 @@
 let chatGPTTabId = null;
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-  if (tab.url && tab.url.startsWith('https://chat.openai.com/')) {
+  if (
+    tab.url &&
+    (tab.url.startsWith('https://chat.openai.com/') ||
+      tab.url.startsWith('https://chatgpt.com/'))
+  ) {
     chatGPTTabId = tabId;
     chrome.sidePanel.setOptions({ tabId, path: 'sidepanel.html' });
     chrome.sidePanel.show(tabId);
