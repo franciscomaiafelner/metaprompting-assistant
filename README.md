@@ -4,14 +4,10 @@ Chrome extension that provides a meta-prompting assistant in a side panel on Cha
 
 ## Development
 
-1. Install dependencies:
-   ```bash
-   npm install
-   ```
-2. Run tests:
-   ```bash
-   npm test
-   ```
+Run the built-in test suite:
+```bash
+npm test
+```
 
 ## Loading the Extension in Chrome
 

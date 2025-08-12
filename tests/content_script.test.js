@@ -1,37 +1,68 @@
-describe('content_script functions', () => {
-  beforeEach(() => {
-    jest.resetModules();
-    global.chrome = { runtime: { sendMessage: jest.fn(), onMessage: { addListener: jest.fn() } } };
-    document.body.innerHTML = `
-      <div data-message-id="1" data-message-author="user">Hi</div>
-      <div data-message-id="2" data-message-author="assistant">Hello</div>
-      <form><textarea></textarea><button type="submit"></button></form>
-    `;
-  });
+const test = require('node:test');
+const assert = require('node:assert');
 
-  test('collectConversation gathers messages', () => {
-    const { collectConversation } = require('../content_script');
-    const conv = collectConversation();
-    expect(conv.length).toBe(2);
-    expect(conv[0].role).toBe('user');
-  });
+function createSpy() {
+  const fn = (...args) => {
+    fn.called = true;
+    fn.calls.push(args);
+  };
+  fn.called = false;
+  fn.calls = [];
+  return fn;
+}
 
-  test('injectPrompt sets textarea and clicks send', () => {
-    const { injectPrompt } = require('../content_script');
-    const btn = document.querySelector('button');
-    const clickSpy = jest.spyOn(btn, 'click');
-    injectPrompt('hello world');
-    expect(document.querySelector('textarea').value).toBe('hello world');
-    expect(clickSpy).toHaveBeenCalled();
-  });
+function setup() {
+  const buttonClick = createSpy();
+  const button = { click: buttonClick };
+  const form = { querySelector: () => button };
+  const textarea = {
+    value: '',
+    dispatchEvent: () => {},
+    closest: () => form
+  };
+  global.document = {
+    querySelectorAll: () => [
+      { getAttribute: () => 'user', textContent: 'Hi' },
+      { getAttribute: () => 'assistant', textContent: 'Hello' }
+    ],
+    querySelector: (sel) => (sel === 'textarea' ? textarea : null),
+    body: {}
+  };
+  global.chrome = {
+    runtime: {
+      sendMessage: createSpy(),
+      onMessage: { addListener: createSpy() }
+    }
+  };
+  global.MutationObserver = class {
+    constructor() {}
+    observe() {}
+  };
+  delete require.cache[require.resolve('../content_script')];
+  const mod = require('../content_script');
+  return { mod, textarea, buttonClick };
+}
 
-  test('handleMessage routes messages', () => {
-    const mod = require('../content_script');
-    const sendResponse = jest.fn();
-    mod.handleMessage({ type: 'get-conversation' }, {}, sendResponse);
-    expect(sendResponse).toHaveBeenCalled();
-    const spy = jest.spyOn(mod, 'injectPrompt');
-    mod.handleMessage({ type: 'inject-prompt', prompt: 'x' });
-    expect(spy).toHaveBeenCalledWith('x');
-  });
+test('collectConversation gathers messages', () => {
+  const { mod } = setup();
+  const conv = mod.collectConversation();
+  assert.strictEqual(conv.length, 2);
+  assert.strictEqual(conv[0].role, 'user');
+});
+
+test('injectPrompt sets textarea and clicks send', () => {
+  const { mod, textarea, buttonClick } = setup();
+  mod.injectPrompt('hello world');
+  assert.strictEqual(textarea.value, 'hello world');
+  assert.strictEqual(buttonClick.called, true);
+});
+
+test('handleMessage routes messages', () => {
+  const { mod, textarea, buttonClick } = setup();
+  const sendResponse = createSpy();
+  mod.handleMessage({ type: 'get-conversation' }, {}, sendResponse);
+  assert.strictEqual(sendResponse.called, true);
+  mod.handleMessage({ type: 'inject-prompt', prompt: 'x' });
+  assert.strictEqual(textarea.value, 'x');
+  assert.strictEqual(buttonClick.called, true);
 });

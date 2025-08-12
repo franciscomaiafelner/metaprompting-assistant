@@ -3,10 +3,6 @@
   "version": "1.0.0",
   "description": "Chrome extension for meta-prompting assistant",
   "scripts": {
-    "test": "jest"
-  },
-  "devDependencies": {
-    "jest": "^29.6.1",
-    "jsdom": "^22.1.0"
+    "test": "node --test"
   }
 }
