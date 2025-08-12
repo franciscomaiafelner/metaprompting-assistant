@@ -66,4 +66,3 @@ test('handleMessage routes messages', () => {
   assert.strictEqual(textarea.value, 'x');
   assert.strictEqual(buttonClick.called, true);
 });
-

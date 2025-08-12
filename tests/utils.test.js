@@ -38,4 +38,3 @@ test('detectMisalignment passes when keyword present', () => {
   const res = detectMisalignment('summarize', 'Please summarize this');
   assert.strictEqual(res.misaligned, false);
 });
-
