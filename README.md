@@ -13,4 +13,4 @@ npm test
 
 1. Open `chrome://extensions` and enable Developer Mode.
 2. Click "Load unpacked" and select this project folder.
-3. Navigate to https://chat.openai.com/ and open the side panel to use the assistant.
+3. Navigate to https://chat.openai.com/ or https://chatgpt.com/ and open the side panel to use the assistant.
