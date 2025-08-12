@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "MetaPrompt Assistant",
+  "version": "1.0",
+  "description": "Meta-prompting assistant for ChatGPT.",
+  "permissions": ["sidePanel", "scripting", "activeTab", "storage"],
+  "host_permissions": ["https://chat.openai.com/*"],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "side_panel": {
+    "default_path": "sidepanel.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chat.openai.com/*"],
+      "js": ["content_script.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}

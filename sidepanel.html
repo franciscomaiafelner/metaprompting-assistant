@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="conversation"></div>
+  <div id="clarification">
+    <input type="text" id="objective" placeholder="State your objective" />
+    <button id="clarify-btn">Clarify</button>
+  </div>
+  <div id="prompt-section" style="display:none;">
+    <textarea id="final-prompt"></textarea>
+    <button id="send-btn">Send to AI</button>
+    <div id="suggestion"></div>
+  </div>
+  <script src="utils.js"></script>
+  <script src="sidepanel.js"></script>
+</body>
+</html>
