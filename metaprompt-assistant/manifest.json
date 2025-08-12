@@ -1,0 +1,36 @@
+{
+  "manifest_version": 3,
+  "name": "Metaprompt Assistant (MVP)",
+  "short_name": "MetaPrompt",
+  "version": "0.1.0",
+  "description": "Assistente de metaprompting que observa o contexto do ChatGPT, clarifica objetivos e gera um único prompt refinado.",
+  "permissions": ["storage", "scripting", "activeTab"],
+  "host_permissions": [
+    "https://chat.openai.com/*",
+    "https://chatgpt.com/*"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "Metaprompt Assistant",
+    "default_popup": "options/index.html"
+  },
+  "icons": {
+    "16": "assets/icon16.png",
+    "48": "assets/icon48.png",
+    "128": "assets/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*"
+      ],
+      "js": ["content/content.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options/index.html"
+}
